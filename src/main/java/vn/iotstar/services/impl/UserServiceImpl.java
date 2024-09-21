@@ -22,4 +22,45 @@ public class UserServiceImpl implements IUserService{
 		return userDao.findByUsername(username);
 	}
 
+	@Override
+	public void update(UserModel user) {
+		userDao.update(user); //xem lai
+		
+	}
+
+	@Override
+	public boolean checkExistEmail(String email) {
+		return userDao.checkExistEmail(email);
+	}
+
+	@Override
+	public boolean checkExistUserName(String username) {
+		return userDao.checkExistUserName(username);
+	}
+
+	@Override
+	public boolean register(String email, String password, String username, String fullname) {
+		if(userDao.checkExistEmail(email))
+		{
+			return false;
+		}
+		if(userDao.checkExistUserName(username))
+		{
+			return false;
+		}
+		userDao.insertregister(new UserModel(username, email, fullname, password,1,"chua co codea"));
+		return true;
+	}
+
+	@Override
+	public boolean checkExistUserNameAndEmail(String username, String email) {
+		return userDao.checkExistUserNameAndEmail(username, email);
+	}
+
+	@Override
+	public boolean updatePasswordByUsernameAndEmail(String username, String email, String newPassword) {
+		return userDao.updatePasswordByUsernameAndEmail(username, email, newPassword);
+	
+	}
+
 }

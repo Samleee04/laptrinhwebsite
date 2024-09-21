@@ -26,7 +26,7 @@ public class LoginController extends HttpServlet{
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("text/html");
+		 resp.setContentType("text/html");
 		 resp.setCharacterEncoding("UTF-8");
 		 req.setCharacterEncoding("UTF-8");
 		 

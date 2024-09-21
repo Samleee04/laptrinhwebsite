@@ -5,6 +5,13 @@ import java.sql.Date;
 
 public class UserModel implements Serializable{
 	
+	public UserModel(String username, String email, String fullname, String password) {
+		super();
+		this.username = username;
+		this.email = email;
+		this.fullname = fullname;
+		this.password = password;
+	}
 	/**
 	 * 
 	 */
@@ -18,6 +25,7 @@ public class UserModel implements Serializable{
 	private String phone;
 	private int roleid;
 	private Date createDate;
+	private String code; 
 	public UserModel(int id, String username, String email, String fullname, String image, String password,
 			String phone, int roleid, Date createDate) {
 		super();
@@ -30,6 +38,33 @@ public class UserModel implements Serializable{
 		this.phone = phone;
 		this.roleid = roleid;
 		this.createDate = createDate;
+	}
+	
+	public UserModel(String username, String email, String fullname, String password, int roleid, String code) {
+		super();
+		this.username = username;
+		this.email = email;
+		this.fullname = fullname;
+		this.password = password;
+		this.roleid = roleid;
+		this.code = code;
+	}
+	
+
+
+
+	public UserModel(String username, String email, String fullname) {
+		super();
+		this.username = username;
+		this.email = email;
+		this.fullname = fullname;
+	}
+
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 	public UserModel() {
 		super();

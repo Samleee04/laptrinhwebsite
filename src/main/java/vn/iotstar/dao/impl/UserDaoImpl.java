@@ -3,6 +3,7 @@ package vn.iotstar.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import vn.iotstar.configs.DBConnectMySQL;
@@ -91,15 +92,7 @@ public class UserDaoImpl extends DBConnectMySQL implements IUserDao{
 		
 		
 	}
-	public static void main(String[] args) {
-		UserDaoImpl userDao = new UserDaoImpl();
-		//userDao.insert(new UserModel(1,"sam","sam@gmail","nhansamle","1","sam123","0989873374","1",));
-		List<UserModel> list  = userDao.findAll();
-		for(UserModel user1 : list)
-		{
-			System.out.println(user1);
-		}
-	}
+	
 
 	@Override
 	public UserModel findByUsername(String username) {
@@ -129,6 +122,149 @@ public class UserDaoImpl extends DBConnectMySQL implements IUserDao{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void insertregister(UserModel user) {
+		String sql = "INSERT INTO user(email,username,fullname,password,phone,roleId,code) VALUES (?,?,?,?,?,?,?)";
+		try {
+			conn =new DBConnectMySQL().getDatabaseConnection() ;
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, user.getEmail());
+			ps.setString(2, user.getUsername());
+			ps.setString(3, user.getFullname());
+			ps.setString(4, user.getPassword());
+			ps.setString(5, user.getPhone());
+			ps.setInt(6, user.getRoleid());
+			ps.setString(7, user.getCode());
+			ps.executeUpdate();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void update(UserModel user) {
+		String sql = "UPDATE user SET email = ? ,username = ? ,fullname = ? ,password = ? ,phone =? ,roleId =? ,code = ? where userID = ?";
+		try {
+			conn =new DBConnectMySQL().getDatabaseConnection() ;
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, user.getEmail());
+			ps.setString(2, user.getUsername());
+			ps.setString(3, user.getFullname());
+			ps.setString(5, user.getImage());
+			ps.setString(4, user.getPassword());
+			ps.setString(5, user.getPhone());
+			ps.setInt(6, user.getRoleid());
+			ps.setString(7, user.getCode());
+			ps.setInt(8, user.getId());
+			ps.executeUpdate();
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public boolean checkExistEmail(String email) {
+		boolean duplicate =false;
+		String sql ="Select * from user where email = ?";
+		try
+		{
+			conn = new DBConnectMySQL().getDatabaseConnection() ;
+			ps = 	conn.prepareStatement(sql);
+			ps.setString(1, email);
+			rs =ps.executeQuery();
+			if(rs.next())
+			{
+				duplicate = true;
+			}
+			ps.close();
+			conn.close();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return duplicate;
+	}
+
+	@Override
+	public boolean checkExistUserName(String username) {
+		boolean duplicate =false;
+		String sql ="Select * from user where username = ?";
+		try
+		{
+			conn = new DBConnectMySQL().getDatabaseConnection() ;
+			ps = 	conn.prepareStatement(sql);
+			ps.setString(1, username);
+			rs =ps.executeQuery();
+			if(rs.next())
+			{
+				duplicate = true;
+			}
+			ps.close();
+			conn.close();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return duplicate;
+	}
+	public static void main(String[] args) {
+		UserDaoImpl userDao = new UserDaoImpl();
+		//userDao.insert(new UserModel(1,"sam","sam@gmail","nhansamle","1","sam123","0989873374","1",));
+		List<UserModel> list  = userDao.findAll();
+		for(UserModel user1 : list)
+		{
+			System.out.println(user1);
+		}
+	}
+
+	@Override
+	public boolean checkExistUserNameAndEmail(String username, String email) {
+		 String sql = "SELECT * FROM user WHERE username = ? AND email = ?";
+	    try {
+	    	conn = new DBConnectMySQL().getDatabaseConnection() ;
+			ps = 	conn.prepareStatement(sql);
+	        ps.setString(1, username);
+	        ps.setString(2, email);
+	        rs = ps.executeQuery();
+
+	        return rs.next(); // Nếu có kết quả trả về, trả về true (nghĩa là username và email khớp)
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (ps != null) try { ps.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	}
+
+	@Override
+	public boolean updatePasswordByUsernameAndEmail(String username, String email, String newPassword) {
+		  String sql = "UPDATE user SET password = ? WHERE username = ? AND email = ?";
+		  try {
+		    	conn = new DBConnectMySQL().getDatabaseConnection() ;
+				ps = 	conn.prepareStatement(sql);
+			       ps.setString(1, newPassword); // Mật khẩu mới
+			       ps.setString(2, username);    // Tên đăng nhập
+			       ps.setString(3, email);       // Email
+			       int rowsAffected = ps.executeUpdate();
+			        return rowsAffected > 0; // Trả về true nếu có dòng bị thay đổi
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        return false;
+			    } finally {
+			        if (ps != null) try { ps.close(); } catch (SQLException e) { e.printStackTrace(); }
+			        if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+			    }
 	}
 
 }
